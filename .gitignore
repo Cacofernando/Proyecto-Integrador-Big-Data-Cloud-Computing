@@ -14,3 +14,4 @@ __pycache__/
 # Archivos temporales del sistema
 .DS_Store
 Thumbs.db
+data/venta_tiendas.csv
