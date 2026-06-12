@@ -37,9 +37,10 @@ mi-proyecto/
 ├── data/               <- Datos de prueba o subconjuntos anonimizados (ignorados por git)
 ├── notebooks/          <- Cuadernos Jupyter con el desarrollo del pipeline
 │   ├── 00_EDA_y_Calidad.ipynb      <- Análisis exploratorio y perfilamiento en PySpark
-│   ├── 01_Capa_Bronze.ipynb        <- Ingesta de datos crudos a formato Delta
-│   ├── 02_Capa_Silver.ipynb        <- Limpieza y transformación distribuida
-│   ├── 03_Capa_Gold.ipynb          <- Creación de Data Marts comerciales
+│   ├── Capa_Bronze.ipynb        <- Ingesta de datos crudos a formato Delta
+│   ├── Capa_Silver.ipynb        <- Limpieza y transformación distribuida
+│   ├── Capa_Gold.ipynb          <- Creación de Data Marts comerciales
+│   ├── Gobernabilidadipynb      <- Control de acceso y documentación
 ├── src/                <- Scripts modulares de Python (en desarrollo para Fase 3)
 ├── requirements.txt    <- Dependencias del proyecto (pyspark, delta-spark, etc.)
 ├── .gitignore          <- Archivos a ignorar (datasets pesados, credenciales)
