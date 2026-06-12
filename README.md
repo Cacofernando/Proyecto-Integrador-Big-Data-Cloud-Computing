@@ -35,10 +35,13 @@ La solución se basa en una arquitectura **Medallion** implementada íntegrament
 ```text
 mi-proyecto/
 ├── data/               <- Datos de prueba o subconjuntos anonimizados (ignorados por git)
-├── notebooks/          <- Cuadernos Jupyter con demostraciones del pipeline 
-├── src/                <- Scripts de PySpark para las capas Bronze, Silver y Gold
-├── dags/               <- Archivos de orquestación para Airflow/Composer
-├── docs/               <- Documentación técnica adicional, diagramas (Modelo C4) y ADRs 
-├── requirements.txt    <- Dependencias del proyecto
-├── .gitignore          <- Archivos a ignorar en el control de versiones
+├── notebooks/          <- Cuadernos Jupyter con el desarrollo del pipeline
+│   ├── 00_EDA_y_Calidad.ipynb      <- Análisis exploratorio y perfilamiento en PySpark
+│   ├── 01_Capa_Bronze.ipynb        <- Ingesta de datos crudos a formato Delta
+│   ├── 02_Capa_Silver.ipynb        <- Limpieza y transformación distribuida
+│   ├── 03_Capa_Gold.ipynb          <- Creación de Data Marts comerciales
+│   └── 04_Notebook_Demostracion.ipynb <- ORQUESTADOR PRINCIPAL (Pipeline End-to-End)
+├── src/                <- Scripts modulares de Python (en desarrollo para Fase 3)
+├── requirements.txt    <- Dependencias del proyecto (pyspark, delta-spark, etc.)
+├── .gitignore          <- Archivos a ignorar (datasets pesados, credenciales)
 └── README.md           <- Este archivo
