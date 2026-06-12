@@ -40,7 +40,7 @@ mi-proyecto/
 │   ├── Capa_Bronze.ipynb        <- Ingesta de datos crudos a formato Delta
 │   ├── Capa_Silver.ipynb        <- Limpieza y transformación distribuida
 │   ├── Capa_Gold.ipynb          <- Creación de Data Marts comerciales
-│   ├── Gobernabilidadipynb      <- Control de acceso y documentación
+│   ├── Gobernabilidad.ipynb      <- Control de acceso y documentación
 ├── src/                <- Scripts modulares de Python (en desarrollo para Fase 3)
 ├── requirements.txt    <- Dependencias del proyecto (pyspark, delta-spark, etc.)
 ├── .gitignore          <- Archivos a ignorar (datasets pesados, credenciales)
