@@ -1,235 +1,314 @@
 # Plataforma Big Data para Analítica Omnicanal de Ventas Retail
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
-[![PySpark](https://img.shields.io/badge/PySpark-3.4.1-orange.svg)](https://spark.apache.org)
-[![Delta Lake](https://img.shields.io/badge/Delta_Lake-2.4.0-blueviolet.svg)](https://delta.io)
-[![GCP](https://img.shields.io/badge/Cloud-GCP-4285F4.svg)](https://cloud.google.com)
-[![Fase](https://img.shields.io/badge/Fase-3_%E2%80%94_Documentaci%C3%B3n_T%C3%A9cnica-green.svg)]()
-
-**Proyecto Integrador** — Asignatura Big Data & Cloud Computing  
-Magíster en Data Science · Universidad del Desarrollo · 2026  
-**Profesor:** Luis Castillo Faune
+> Fase 3 — Documentación Técnica  
+> Big Data y Cloud Computing · Proyecto Integrador · MDS UDD 2026
 
 ---
 
 ## Equipo
 
-| Integrante | Rol en el proyecto |
-|---|---|
-| Claudio Ballerini | Arquitectura y Pipeline Bronze |
-| Juan José Torres | Pipeline Silver y Optimización |
-| Cristian Vargas | Pipeline Gold y Data Marts |
-| Christian Vásquez | Gobernabilidad y Seguridad |
+| Integrante           | Rol                              |
+|----------------------|----------------------------------|
+| Claudio Ballerini    | Arquitectura y Pipeline Bronze   |
+| Juan José Torres     | Pipeline Silver y Optimización   |
+| Cristian Vargas      | Pipeline Gold y Data Marts       |
+| Christian Vásquez    | Gobernabilidad y Seguridad       |
+| **Prof. Luis Castillo Faune** | Docente evaluador       |
+
+**Entrega Fase 3:** 26 de junio de 2026
 
 ---
 
 ## Descripción del Problema
 
-Una empresa chilena de retail opera un ecosistema omnicanal (tiendas físicas + e-commerce) con más de **10 millones de registros transaccionales** anuales dispersos en fuentes heterogéneas. El proyecto diseña e implementa una plataforma Big Data capaz de integrar, procesar y analizar esos datos, respondiendo preguntas críticas de la Gerencia Comercial sobre rotación de productos, quiebres de stock y comportamiento de márgenes.
+Una empresa chilena de retail opera un ecosistema omnicanal con tiendas físicas
+y e-commerce. Con más de **10 millones de registros transaccionales**, su
+información comercial estaba dispersa sin integración, impidiendo responder
+preguntas críticas de rotación, quiebres de stock y comportamiento de canal.
 
-**Stakeholders:** Gerencia Comercial · Operaciones · Marketing Analytics
+La solución implementa una **plataforma Big Data Medallion** sobre Google Cloud
+Platform que procesa, limpia y expone los datos como data marts analíticos en
+BigQuery + Looker Studio.
 
 ---
 
-## Arquitectura (Medallion sobre GCP)
+## Arquitectura
+
+Patrón **Medallion** (Bronze → Silver → Gold) sobre GCP con procesamiento Batch
+Incremental Diario en clúster efímero Dataproc. Ver diagrama completo en
+`/docs/arquitectura_c4_nivel2.svg`.
 
 ```
-                              ┌──────────────────────────────────────────────────┐
-                              │           GCP: data-lake-retail (GCS)           
-                              │                                                  
-  [CSV Fuentes]──ingesta──►  [RAW]──Spark──►[BRONZE]──Spark──►[SILVER]──Spark──►[GOLD]
-  venta_tiendas.csv           │   Delta Lake   Delta Lake    Delta Lake         BigQuery
-  venta_ecom.csv              │   inmutable    tipificado    data marts
-  Maestro_Producto.csv        │               particionado
-  Maestro_Tienda.csv          │
-                              └──────────────────────────────────────────────────┘
-                                          ▲                        ▼
-                                   Cloud Composer           Looker Studio
-                                   (orquestación)           (dashboards)
-                                          ▲
-                                   retail_governance BQ
-                                   (linaje + auditoría)
+[Sistemas fuente]      [GCS — Data Lake]                   [Consumo]
+  CSV / ERP  ───►  RAW ──► Bronze ──► Silver ──► Gold ──► BigQuery ──► Looker
+                         (Delta)    (Delta,      (Delta)   External    Studio
+                                    anio/mes)    4 marts   Tables
+                         ↕ Gobierno: retail_governance (BigQuery)
+                         ↕ Orquestación: Cloud Composer / Airflow (diseñado)
 ```
 
-**Patrón de procesamiento:** Batch Incremental Diario (ventana nocturna 00:00–02:00)  
-**Formato de almacenamiento:** Delta Lake (ACID, time travel, schema evolution)  
-**Proveedor Cloud:** Google Cloud Platform (GCS · Dataproc · BigQuery · Cloud Composer)
+### Stack tecnológico
 
-> El diagrama C4 Nivel 2 completo se encuentra en [`/docs/arquitectura_c4_nivel2.svg`](docs/arquitectura_c4_nivel2.svg)
+| Componente         | Tecnología                     |
+|--------------------|-------------------------------|
+| Ingesta            | Python + PySpark               |
+| Procesamiento      | Apache Spark 3.4.1 + Dataproc  |
+| Formato de tabla   | Delta Lake 2.4.0               |
+| Data Lake          | Google Cloud Storage           |
+| Data Warehouse     | BigQuery (External Tables)     |
+| Orquestación       | Airflow (diseñado; ver §6.1)   |
+| Visualización      | Looker Studio                  |
+| Gobierno           | BigQuery (`retail_governance`) |
+| Seguridad          | GCP IAM + SHA-256              |
 
 ---
 
 ## Estructura del Repositorio
 
 ```
-Proyecto-Integrador-Big-Data-Cloud-Computing/
+proyecto-retail-bigdata/
+├── data/
+│   ├── venta_ecom.csv           ← ~285.992 registros e-commerce
+│   ├── Maestro_Producto.csv     ← ~451.000 productos
+│   ├── Maestro_Tienda.csv       ← ~475 tiendas
+│   ├── raw/ interim/ processed/ ← placeholders locales
 │
-├── notebooks/                         ← Pipeline completo en Google Colab
-│   ├── EDA_y_Calidad.ipynb            ← 00: Análisis exploratorio con PySpark
-│   ├── Capa_Bronze.ipynb              ← 01: Ingesta RAW → Delta Lake Bronze
-│   ├── Capa_Silver.ipynb              ← 02: Limpieza y transformación Silver
-│   ├── Capa_Gold.ipynb             ← 03: Data marts Gold + evidencia de cache
-│   ├── Gobernabilidad.ipynb           ← 04: IAM, linaje, datos sensibles, GE
-│   └── Optimizacion_y_FinOps.ipynb    ← 05: Evidencia de optimización y costos
+├── notebooks/
+│   ├── EDA_y_Calidad.ipynb      ← Exploración inicial con PySpark
+│   ├── Capa_Bronze.ipynb        ← Ingesta CSV → Delta Lake
+│   ├── Capa_Silver.ipynb        ← Limpieza + particionamiento
+│   ├── Capa_Gold_v2.ipynb       ← 4 data marts comerciales
+│   └── Gobernabilidad.ipynb     ← IAM, linaje, calidad, seguridad
 │
-├── docs/                              ← Documentación técnica Fase 3
-│   ├── arquitectura_c4_nivel2.svg     ← Diagrama C4 Nivel 2
-│   └── Fase3_Informe_Tecnico.docx     ← Informe técnico + ADRs
+├── src/                         ← Módulos Python productizados (Fase 3)
+│   ├── config.py                ← Rutas GCS, parámetros Spark, FinOps
+│   ├── spark_session.py         ← Fábrica SparkSession (Colab/Dataproc)
+│   ├── bronze.py                ← Ingesta Bronze modular
+│   ├── silver.py                ← Transformaciones Silver
+│   ├── gold.py                  ← Data marts + benchmark cache + FinOps
+│   ├── governance.py            ← Linaje, auditoría, pseudonimización
+│   └── pipeline_dag.py          ← DAG Airflow (diseñado, no desplegado)
 │
-├── data/                              ← Datos locales (ignorados en .gitignore)
-│   ├── venta_ecom.csv                 ← Transacciones e-commerce (~286K filas)
-│   ├── Maestro_Producto.csv           ← Catálogo de productos (~451K filas)
-│   └── Maestro_Tienda.csv             ← Maestro de tiendas (~475 registros)
-│   └── (venta_tiendas.csv en GCS)     ← Dataset principal >10M filas — en bucket
+├── docs/
+│   ├── arquitectura_c4_nivel2.svg  ← Diagrama C4 Nivel 2
+│   └── adrs/
+│       ├── ADR-001-delta-lake-formato-almacenamiento.md
+│       ├── ADR-002-batch-vs-streaming.md
+│       └── ADR-003-particionamiento-silver.md
 │
-├── src/                               ← Scripts modulares (en desarrollo)
-├── requirements.txt                   ← Dependencias del proyecto
-├── .gitignore
+├── requirements.txt
 └── README.md
 ```
 
-> **Nota:** El notebook de demostración del pipeline completo es [`notebooks/Capa_Gold.ipynb`](notebooks/Capa_Gold.ipynb), que incluye ingesta, transformación, escritura en Gold y evidencia de optimización.
+---
+
+## Optimizaciones Implementadas
+
+Documentadas en la **Sección 3** del Informe Técnico con métricas empíricas:
+
+| Optimización | Métrica antes | Métrica después | Mejora |
+|---|---|---|---|
+| Cache Silver en Gold (ventas año/mes) | 45.2 s | 4.8 s | −89.4% |
+| Cache Silver en Gold (ventas/tienda) | 38.7 s | 3.1 s | −92.0% |
+| Particionamiento Silver por (anio,mes) | 100% datos leídos | ~4% datos leídos | ~96% menos scan |
+| Shuffle partitions | 200 (default) | 8 (Colab 4 vCPU) | Sin overhead microtasks |
 
 ---
 
-## Instalación y Ejecución
+## Análisis de Costos (FinOps)
 
-### Pre-requisitos
+Principio rector: **clúster efímero** — Dataproc se crea al inicio del pipeline
+y se destruye al terminar (0.25 h/día × 30 días = 7.5 h/mes).
 
-| Requisito | Versión / Descripción |
+| Componente | USD/mes |
 |---|---|
-| Google Account | Con crédito GCP free trial (USD 300) activo |
-| Google Colab | Entorno de ejecución principal (gratuito) |
-| GCS Bucket | `gs://data-lake-retail/` creado en el proyecto GCP |
-| Dataset principal | `venta_tiendas.csv` subido a `gs://data-lake-retail/raw/` |
-
-### Configuración inicial del bucket
-
-```bash
-# Crear el bucket (solo primera vez)
-gcloud storage buckets create gs://data-lake-retail --location=us-central1
-
-# Subir el dataset principal
-gcloud storage cp venta_tiendas.csv gs://data-lake-retail/raw/
-gcloud storage cp venta_ecom.csv gs://data-lake-retail/raw/
-gcloud storage cp Maestro_Producto.csv gs://data-lake-retail/raw/
-gcloud storage cp Maestro_Tienda.csv gs://data-lake-retail/raw/
-```
-
-### Ejecución del pipeline (orden recomendado)
-
-Abrir cada notebook en Google Colab y ejecutar en secuencia. La primera celda de cada notebook instala las dependencias automáticamente.
-
-```
-1. notebooks/EDA_y_Calidad.ipynb        ← Exploración y perfilamiento
-2. notebooks/Capa_Bronze.ipynb          ← Ingesta a Delta Lake
-3. notebooks/Capa_Silver.ipynb          ← Limpieza y transformación
-4. notebooks/Capa_Gold.ipynb         ← Data marts + cache evidence
-5. notebooks/Gobernabilidad.ipynb       ← Controles IAM y linaje
-6. notebooks/Optimizacion_y_FinOps.ipynb ← Comparativas de optimización
-```
-
-> **PROJECT_ID:** Antes de ejecutar `Gobernabilidad.ipynb`, actualizar la variable `PROJECT_ID = "proyectointegradorudd"` con el ID real del proyecto GCP.
-
-### Dependencias Python
-
-```bash
-pip install pyspark==3.4.1 delta-spark==2.4.0 google-cloud-bigquery \
-            google-cloud-storage great_expectations==0.18.15 db-dtypes
-```
-
-> En Google Colab estos se instalan con `!pip install -q ...` dentro del notebook.
+| Dataproc n2-standard-4 efímero | 9.00 |
+| Google Cloud Storage ~50 GB | 1.00 |
+| BigQuery on-demand ~100 GB/mes | 0.50 |
+| Cloud Composer (Airflow) | 31.00 |
+| **Total con Cloud Composer** | **~41.50** |
+| **Total con Cloud Workflows** | **~10.51** ← recomendado en etapa temprana |
 
 ---
 
-## Datos de Entrada y Salida
+## Limitaciones Conocidas (Sección 6.1 del Informe)
 
-### Entradas (Capa RAW)
+1. **E-commerce no integrado:** `venta_ecom.csv` (~286K filas) no está en el
+   pipeline principal. Requiere resolver diferencia de esquema con
+   `venta_tiendas.csv`.
+2. **Airflow no desplegado:** el DAG fue diseñado pero no ejecutado en Cloud
+   Composer productivo. La ejecución fue manual y secuencial en Colab.
+3. **Gold sin enriquecimiento:** los data marts muestran códigos numéricos
+   (cod_tienda, id_producto) en lugar de nombres. Pendiente JOIN con maestros.
+4. **Spark UI manual:** las métricas de optimización se midieron con
+   `time.time()`. El Spark UI Web requiere port-forwarding en Colab.
 
-| Archivo | Columnas Clave | Descripción |
-|---|---|---|
-| `venta_tiendas.csv` | id_canal, numero_transaccion, fecha_transaccion, id_producto, unidades, venta, costo | Transacciones POS tiendas físicas. >10M filas |
-| `venta_ecom.csv` | Mismo esquema que venta_tiendas | Transacciones canal e-commerce. ~286K filas |
-| `Maestro_Producto.csv` | id_producto, marca, clase, genero, tipo, modelo, talla | Catálogo de productos |
-| `Maestro_Tienda.csv` | cod_tienda_facturacion, nombre_tienda_facturacion, cadena_facturacion | Maestro de tiendas |
+---
 
-### Salidas (Capa Gold en BigQuery)
+## Requisitos Previos
 
-| Tabla | Descripción | KPIs |
-|---|---|---|
-| `ventas_mensuales` | Agregado por año/mes | venta_total, margen_total, boletas_distintas, margen_porcentaje |
-| `ventas_por_tienda` | Agregado por tienda | venta_total, ticket_promedio, margen_porcentaje |
-| `ventas_por_producto` | Ranking de productos | venta_total, unidades_total, margen_total |
-| `ventas_canal_documento` | Por canal y tipo de documento | Comparativa POS vs e-commerce |
+```bash
+# Python 3.9+
+pip install pyspark==3.4.1 delta-spark==2.4.0 importlib-metadata==8.0.0 \
+            google-cloud-bigquery google-cloud-storage \
+            great_expectations==0.18.15 db-dtypes apache-airflow
+```
 
-### Governance (BigQuery — retail_governance)
+### APIs GCP necesarias
 
-| Tabla | Descripción |
-|---|---|
-| `data_lineage` | Linaje campo a campo: RAW → Bronze → Silver → Gold |
-| `pipeline_audit_log` | Log de ejecuciones con timestamps y métricas |
-| `data_quality_results` | Resultados de validaciones Great Expectations |
+```bash
+gcloud services enable storage.googleapis.com dataproc.googleapis.com \
+  bigquery.googleapis.com composer.googleapis.com
+```
+
+---
+
+## Instrucciones de Ejecución
+
+### Opción 1 — Google Colab (demostración)
+
+1. Crear bucket y subir datos RAW:
+   ```bash
+   gsutil mb -l us-central1 gs://data-lake-retail
+   gsutil cp data/*.csv gs://data-lake-retail/raw/
+   ```
+2. Ejecutar notebooks **en orden**:
+   `EDA_y_Calidad` → `Capa_Bronze` → `Capa_Silver` → `Capa_Gold_v2` → `Gobernabilidad`
+3. Ajustar `PROJECT_ID` en la celda de configuración de cada notebook.
+
+### Opción 2 — Dataproc (producción)
+
+```bash
+# Crear clúster
+gcloud dataproc clusters create retail-pipeline-cluster \
+  --region=us-central1 --master-machine-type=n2-standard-4 \
+  --num-workers=2 --worker-machine-type=n2-standard-4 \
+  --image-version=2.1-debian11 \
+  --properties="spark:spark.jars.packages=io.delta:delta-core_2.12:2.4.0"
+
+# Subir scripts
+gsutil cp -r src/ gs://data-lake-retail/scripts/
+
+# Ejecutar etapas (en orden)
+gcloud dataproc jobs submit pyspark gs://data-lake-retail/scripts/run_bronze.py \
+  --cluster=retail-pipeline-cluster --region=us-central1
+# ... repetir para silver, gold, governance
+
+# Destruir clúster al terminar (¡siempre!)
+gcloud dataproc clusters delete retail-pipeline-cluster --region=us-central1
+```
 
 ---
 
 ## Manual de Operación
 
-### Ejecución normal (pipeline nocturno)
-
-En producción, el DAG de Airflow (`dags/pipeline_retail_diario.py`) ejecuta los notebooks en secuencia a las 00:30 de cada día. Para ejecución manual:
+### Verificar estado del Data Lake
 
 ```bash
-# Triggear el DAG desde Cloud Composer (si está desplegado)
-gcloud composer environments run retail-composer \
-  --location us-central1 dags trigger -- pipeline_retail_diario
-
-# O ejecutar los notebooks en secuencia desde Colab (ver sección anterior)
+gsutil ls gs://data-lake-retail/bronze/
+gsutil ls gs://data-lake-retail/silver/
+gsutil ls gs://data-lake-retail/gold/
+gsutil du -sh gs://data-lake-retail/   # tamaño total
 ```
 
-### Verificación post-ejecución
+### Consultar data marts desde BigQuery
+
+```sql
+-- Ventas mensuales del último año disponible
+SELECT anio, mes, venta_total, margen_porcentaje
+FROM `proyectointegradorudd.retail_gold.ventas_mensuales`
+ORDER BY anio DESC, mes DESC LIMIT 12;
+
+-- Top 10 tiendas por venta
+SELECT cod_tienda_facturacion, venta_total, ticket_promedio
+FROM `proyectointegradorudd.retail_gold.ventas_por_tienda`
+LIMIT 10;
+
+-- Mix de canales
+SELECT id_canal, tipo_documento, venta_total
+FROM `proyectointegradorudd.retail_gold.ventas_canal_documento`
+ORDER BY venta_total DESC;
+```
+
+### Revisar auditoría del pipeline
+
+```sql
+SELECT etapa, estado, registros_entrada, registros_salida, duracion_segundos
+FROM `proyectointegradorudd.retail_governance.pipeline_audit_log`
+ORDER BY timestamp_inicio DESC LIMIT 10;
+```
+
+### Revertir con Time Travel (Delta Lake)
 
 ```python
-# En cualquier notebook Colab, verificar conteos en Gold:
-from google.cloud import bigquery
-bq = bigquery.Client(project="proyectointegradorudd")
-result = bq.query("SELECT COUNT(*) as total FROM retail_gold.ventas_mensuales").to_dataframe()
-print(result)
+from delta.tables import DeltaTable
+dt = DeltaTable.forPath(spark, "gs://data-lake-retail/silver/venta_tiendas_delta")
+dt.history().show()          # ver versiones disponibles
+dt.restoreToVersion(0)       # restaurar a versión anterior
+
+# Ver historial de versiones disponibles
+dt.history().show()
 ```
 
-### Rollback con Delta Lake Time Travel
+### Mantenimiento periódico (mensual recomendado)
+
+Las tablas Delta Lake acumulan archivos pequeños y versiones antiguas con cada ejecución del pipeline. Ejecutar mensualmente para mantener el rendimiento de lectura:
 
 ```python
-# Leer versión anterior de Silver (ej: versión 3)
-df_historico = spark.read.format("delta") \
-    .option("versionAsOf", 3) \
-    .load("gs://data-lake-retail/silver/venta_tiendas_delta")
+from delta.tables import DeltaTable
+
+# 1. OPTIMIZE — compactar archivos pequeños en cada capa
+for ruta in [
+    "gs://data-lake-retail/bronze/venta_tiendas_delta",
+    "gs://data-lake-retail/silver/venta_tiendas_delta",
+    "gs://data-lake-retail/gold/ventas_mensuales",
+]:
+    dt = DeltaTable.forPath(spark, ruta)
+    dt.optimize().executeCompaction()
+    print(f"✓ OPTIMIZE completado: {ruta.split('/')[-1]}")
+
+# 2. VACUUM — eliminar versiones antiguas (retener últimos 7 días = 168 horas)
+# ⚠ No reducir por debajo de 168h sin deshabilitar la protección primero
+for ruta in [
+    "gs://data-lake-retail/bronze/venta_tiendas_delta",
+    "gs://data-lake-retail/silver/venta_tiendas_delta",
+]:
+    dt = DeltaTable.forPath(spark, ruta)
+    dt.vacuum(168)  # 168 horas = 7 días
+    print(f"✓ VACUUM completado: {ruta.split('/')[-1]}")
 ```
 
-### Alertas de fallo
-
-El DAG de Airflow está configurado para enviar email al `svc-dataeng` en caso de fallo de cualquier tarea. El log de auditoría en `retail_governance.pipeline_audit_log` registra cada ejecución con su estado y métricas.
+> **Nota operacional:** OPTIMIZE es seguro de ejecutar en cualquier momento. VACUUM elimina permanentemente las versiones antiguas — después de ejecutarlo, el Time Travel solo estará disponible hasta la versión más antigua que quede dentro de la ventana de retención (7 días por defecto).
 
 ---
 
-## Evidencia de Optimización
+## Datos de Entrada y Salida
 
-Ver [`notebooks/Optimizacion_y_FinOps.ipynb`](notebooks/Optimizacion_y_FinOps.ipynb) para la evidencia completa. Resumen:
+### Inputs — Capa RAW
 
-| Optimización | Métrica Antes | Métrica Después | Mejora |
-|---|---|---|---|
-| Caching Silver (Gold job #1) | 45.2 s | 4.8 s | −89.4% |
-| Caching Silver (Gold job filtro tienda) | 38.7 s | 3.1 s | −92.0% |
-| Partition pruning (1 mes de 24) | ~38.7 s | ~3.1 s | ~96% menos archivos leídos |
-| Shuffle partitions (200 → 8) | overhead 200 tasks | 8 tasks | −96% task overhead |
+| Archivo | Registros | Descripción |
+|---|---|---|
+| `venta_tiendas.csv` | >10.000.000 | Ventas POS (integrado en pipeline) |
+| `venta_ecom.csv` | ~285.992 | Ventas e-commerce (**pendiente integración**) |
+| `Maestro_Producto.csv` | ~451.000 | Catálogo SKU (**pendiente JOIN Gold**) |
+| `Maestro_Tienda.csv` | ~475 | Catálogo tiendas (**pendiente JOIN Gold**) |
+
+### Outputs — Capa Gold (data marts)
+
+| Data Mart | Descripción |
+|---|---|
+| `ventas_mensuales` | KPIs por año-mes: venta, margen, boletas, productos |
+| `ventas_por_tienda` | KPIs por tienda: venta, ticket promedio, margen |
+| `ventas_por_producto` | KPIs por SKU: venta, margen, unidades |
+| `ventas_canal_documento` | KPIs por canal × tipo de documento |
+| `evidencia_optimizacion` | Benchmark cache: tiempos sin/con cache |
 
 ---
 
 ## Declaración de Uso de IA
 
-Este proyecto utilizó Claude (Anthropic) para: (1) redacción y estructuración del README y del informe técnico, (2) revisión de comentarios en notebooks. Las decisiones arquitectónicas, el diseño del pipeline, el código PySpark y todos los resultados de ejecución son propios del equipo. Los integrantes del equipo son responsables de todo el contenido entregado.
-
----
-
-## Licencia Académica
-
-Uso exclusivo para evaluación académica en el contexto del Magíster en Data Science, Universidad del Desarrollo, 2026.
+Este informe y los módulos `src/` fueron desarrollados con asistencia de Claude
+(Anthropic) y Google Gemini para estructuración y edición. Las decisiones
+arquitectónicas, el análisis de trade-offs y todos los resultados de
+implementación son propios del equipo. Los integrantes son capaces de explicar
+y defender cada elemento documentado ante el panel evaluador.
