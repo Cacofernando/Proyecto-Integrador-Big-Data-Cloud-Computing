@@ -88,7 +88,7 @@ Proyecto-Integrador-Big-Data-Cloud-Computing/
 └── README.md
 ```
 
-> **Nota:** El notebook de demostración del pipeline completo es [`notebooks/Capa_Gold_v2.ipynb`](notebooks/Capa_Gold_v2.ipynb), que incluye ingesta, transformación, escritura en Gold y evidencia de optimización.
+> **Nota:** El notebook de demostración del pipeline completo es [`notebooks/Capa_Gold.ipynb`](notebooks/Capa_Gold.ipynb), que incluye ingesta, transformación, escritura en Gold y evidencia de optimización.
 
 ---
 
@@ -124,7 +124,7 @@ Abrir cada notebook en Google Colab y ejecutar en secuencia. La primera celda de
 1. notebooks/EDA_y_Calidad.ipynb        ← Exploración y perfilamiento
 2. notebooks/Capa_Bronze.ipynb          ← Ingesta a Delta Lake
 3. notebooks/Capa_Silver.ipynb          ← Limpieza y transformación
-4. notebooks/Capa_Gold_v2.ipynb         ← Data marts + cache evidence
+4. notebooks/Capa_Gold.ipynb         ← Data marts + cache evidence
 5. notebooks/Gobernabilidad.ipynb       ← Controles IAM y linaje
 6. notebooks/Optimizacion_y_FinOps.ipynb ← Comparativas de optimización
 ```
