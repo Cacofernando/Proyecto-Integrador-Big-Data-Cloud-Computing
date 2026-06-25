@@ -1,1 +1,40 @@
-# Agrega aquí las dependencias del proyecto (una por línea)
+# ─── Plataforma Big Data · Analítica Omnicanal de Ventas Retail ───────────────
+# Proyecto Integrador — Big Data y Cloud Computing · MDS UDD 2026
+# Equipo: Ballerini · Torres · Vargas · Vásquez
+#
+# Instrucciones de instalación:
+#   pip install -r requirements.txt
+#
+# Nota: en Google Colab añadir --break-system-packages si es necesario.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Motor de procesamiento distribuido ────────────────────────────────────────
+# Versiones fijadas para garantizar compatibilidad entre PySpark y Delta Lake
+# (combinación validada en notebooks Fase 2 sobre Google Colab + GCS)
+pyspark==3.4.1
+delta-spark==2.4.0
+importlib-metadata==8.0.0      # compatibilidad requerida por delta-spark en Colab
+
+# ── Google Cloud Platform ─────────────────────────────────────────────────────
+google-cloud-bigquery==3.11.4  # cliente BigQuery para gobernabilidad (linaje, auditoría)
+google-cloud-storage==2.10.0   # acceso a GCS desde scripts locales / tests
+db-dtypes==1.1.1               # tipos de datos BigQuery ↔ pandas (requerido por BQ client)
+
+# ── Calidad de datos ──────────────────────────────────────────────────────────
+great-expectations==0.18.15    # validación de expectativas sobre capa Silver
+
+# ── Orquestación ─────────────────────────────────────────────────────────────
+# Nota: el DAG pipeline_dag.py fue diseñado para Cloud Composer (Airflow managed).
+# Para ejecución local o pruebas del DAG, instalar apache-airflow.
+# En producción (Cloud Composer), Airflow viene preinstalado en el entorno.
+apache-airflow==2.7.0
+apache-airflow-providers-google==10.3.0  # operadores Dataproc, BigQuery, GCS
+
+# ── Análisis y utilidades ─────────────────────────────────────────────────────
+pandas==2.0.3
+numpy==1.25.0
+
+# ── Dependencias de desarrollo / testing ─────────────────────────────────────
+# (no requeridas en producción / Dataproc)
+jupyter==1.0.0                 # para ejecutar los notebooks localmente
+ipykernel==6.25.0

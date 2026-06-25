@@ -109,10 +109,14 @@ Documentadas en la **Sección 3** del Informe Técnico con métricas empíricas:
 
 | Optimización | Métrica antes | Métrica después | Mejora |
 |---|---|---|---|
-| Cache Silver en Gold (ventas año/mes) | 45.2 s | 4.8 s | −89.4% |
-| Cache Silver en Gold (ventas/tienda) | 38.7 s | 3.1 s | −92.0% |
-| Particionamiento Silver por (anio,mes) | 100% datos leídos | ~4% datos leídos | ~96% menos scan |
-| Shuffle partitions | 200 (default) | 8 (Colab 4 vCPU) | Sin overhead microtasks |
+| Cache Silver en Gold (ventas año/mes) | 487,06 s | 1,50 s | −99,7% |
+| Cache Silver en Gold (ventas/tienda, filtro mes) | 0,77 s | 0,53 s | −31,3% |
+| Particionamiento Silver por (anio,mes) | 2.249.970 registros leídos | 35.391 registros leídos (~1,0%) | 99% menos datos escaneados |
+| Shuffle partitions (200 → 8) | 1,48 s | 0,87 s | −41,6% |
+| Clúster efímero vs permanente | USD 864/mes (720 h) | USD 9,00/mes (7,5 h) | −99% en cómputo |
+
+> Métricas medidas sobre 2.249.970 registros reales en Google Colab + GCS.
+> Fuente: `notebooks/Optimizacion_y_FinOps.ipynb`.
 
 ---
 
@@ -289,7 +293,7 @@ for ruta in [
 
 | Archivo | Registros | Descripción |
 |---|---|---|
-| `venta_tiendas.csv` | >10.000.000 | Ventas POS (integrado en pipeline) |
+| `venta_tiendas.csv` | >10.000.000 (RAW) · 2.249.970 (Silver procesado) | Ventas POS (integrado en pipeline) |
 | `venta_ecom.csv` | ~285.992 | Ventas e-commerce (**pendiente integración**) |
 | `Maestro_Producto.csv` | ~451.000 | Catálogo SKU (**pendiente JOIN Gold**) |
 | `Maestro_Tienda.csv` | ~475 | Catálogo tiendas (**pendiente JOIN Gold**) |
