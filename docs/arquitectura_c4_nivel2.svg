@@ -1,0 +1,193 @@
+<svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#1B3A6B"/>
+    </marker>
+    <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2E6DA4"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="115%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000022"/>
+    </filter>
+  </defs>
+
+  <!-- Fondo -->
+  <rect width="900" height="620" fill="#F8FAFC" rx="12"/>
+
+  <!-- Título -->
+  <rect x="0" y="0" width="900" height="52" fill="#1B3A6B" rx="12"/>
+  <rect x="0" y="40" width="900" height="12" fill="#1B3A6B"/>
+  <text x="450" y="32" text-anchor="middle" fill="white" font-size="17" font-weight="bold">Arquitectura — Modelo C4 Nivel 2 (Contenedores) · Plataforma Big Data Retail</text>
+
+  <!-- ═══ ZONA FUENTES ═══ -->
+  <rect x="20" y="72" width="120" height="520" fill="#E8F0FB" rx="8" stroke="#2E6DA4" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="80" y="92" text-anchor="middle" fill="#1B3A6B" font-size="11" font-weight="bold">FUENTES</text>
+
+  <!-- CSV POS -->
+  <rect x="30" y="102" width="100" height="56" fill="white" rx="6" filter="url(#shadow)" stroke="#2E6DA4" stroke-width="1.2"/>
+  <text x="80" y="122" text-anchor="middle" fill="#1B3A6B" font-size="10" font-weight="bold">CSV / ERP</text>
+  <text x="80" y="136" text-anchor="middle" fill="#444" font-size="9">venta_tiendas</text>
+  <text x="80" y="148" text-anchor="middle" fill="#888" font-size="8">&gt;10M filas</text>
+
+  <!-- CSV Ecom -->
+  <rect x="30" y="174" width="100" height="56" fill="white" rx="6" filter="url(#shadow)" stroke="#2E6DA4" stroke-width="1.2"/>
+  <text x="80" y="194" text-anchor="middle" fill="#1B3A6B" font-size="10" font-weight="bold">CSV / Ecom</text>
+  <text x="80" y="208" text-anchor="middle" fill="#444" font-size="9">venta_ecom</text>
+  <text x="80" y="220" text-anchor="middle" fill="#CC4400" font-size="8">⚠ pendiente</text>
+
+  <!-- Maestros -->
+  <rect x="30" y="246" width="100" height="56" fill="white" rx="6" filter="url(#shadow)" stroke="#2E6DA4" stroke-width="1.2"/>
+  <text x="80" y="266" text-anchor="middle" fill="#1B3A6B" font-size="10" font-weight="bold">Maestros</text>
+  <text x="80" y="280" text-anchor="middle" fill="#444" font-size="9">Producto · Tienda</text>
+  <text x="80" y="292" text-anchor="middle" fill="#CC4400" font-size="8">⚠ sin JOIN aún</text>
+
+  <!-- ═══ ZONA GCS DATA LAKE ═══ -->
+  <rect x="155" y="72" width="520" height="520" fill="#EBF5EB" rx="8" stroke="#2E8B57" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="415" y="92" text-anchor="middle" fill="#1A5C36" font-size="11" font-weight="bold">GCS — DATA LAKE  ·  gs://data-lake-retail/</text>
+
+  <!-- RAW -->
+  <rect x="165" y="102" width="105" height="80" fill="white" rx="8" filter="url(#shadow)" stroke="#5C9E31" stroke-width="1.5"/>
+  <rect x="165" y="102" width="105" height="22" fill="#5C9E31" rx="8"/>
+  <rect x="165" y="116" width="105" height="8" fill="#5C9E31"/>
+  <text x="217" y="118" text-anchor="middle" fill="white" font-size="10" font-weight="bold">RAW</text>
+  <text x="217" y="140" text-anchor="middle" fill="#333" font-size="9">gs://.../raw/</text>
+  <text x="217" y="154" text-anchor="middle" fill="#555" font-size="8">CSV sin modificar</text>
+  <text x="217" y="168" text-anchor="middle" fill="#888" font-size="8">inferSchema=False</text>
+
+  <!-- BRONZE -->
+  <rect x="290" y="102" width="115" height="100" fill="white" rx="8" filter="url(#shadow)" stroke="#CD7F32" stroke-width="1.5"/>
+  <rect x="290" y="102" width="115" height="22" fill="#CD7F32" rx="8"/>
+  <rect x="290" y="116" width="115" height="8" fill="#CD7F32"/>
+  <text x="347" y="118" text-anchor="middle" fill="white" font-size="10" font-weight="bold">BRONZE</text>
+  <text x="347" y="140" text-anchor="middle" fill="#333" font-size="9">Delta Lake</text>
+  <text x="347" y="154" text-anchor="middle" fill="#555" font-size="8">Sin transformaciones</text>
+  <text x="347" y="168" text-anchor="middle" fill="#555" font-size="8">Time Travel ✓</text>
+  <text x="347" y="182" text-anchor="middle" fill="#888" font-size="8">ACID · Schema evol.</text>
+
+  <!-- SILVER -->
+  <rect x="425" y="102" width="115" height="120" fill="white" rx="8" filter="url(#shadow)" stroke="#A8A8A8" stroke-width="1.5"/>
+  <rect x="425" y="102" width="115" height="22" fill="#888" rx="8"/>
+  <rect x="425" y="116" width="115" height="8" fill="#888"/>
+  <text x="482" y="118" text-anchor="middle" fill="white" font-size="10" font-weight="bold">SILVER</text>
+  <text x="482" y="140" text-anchor="middle" fill="#333" font-size="9">Delta Lake</text>
+  <text x="482" y="154" text-anchor="middle" fill="#555" font-size="8">partitionBy(anio,mes)</text>
+  <text x="482" y="168" text-anchor="middle" fill="#555" font-size="8">7 transformaciones</text>
+  <text x="482" y="182" text-anchor="middle" fill="#555" font-size="8">Calidad + dedup</text>
+  <text x="482" y="196" text-anchor="middle" fill="#888" font-size="8">shuffle.partitions=8</text>
+  <text x="482" y="210" text-anchor="middle" fill="#2E6DA4" font-size="8" font-weight="bold">~10M+ registros</text>
+
+  <!-- GOLD -->
+  <rect x="560" y="102" width="105" height="140" fill="white" rx="8" filter="url(#shadow)" stroke="#D4AC0D" stroke-width="1.5"/>
+  <rect x="560" y="102" width="105" height="22" fill="#B8860B" rx="8"/>
+  <rect x="560" y="116" width="105" height="8" fill="#B8860B"/>
+  <text x="612" y="118" text-anchor="middle" fill="white" font-size="10" font-weight="bold">GOLD</text>
+  <text x="612" y="140" text-anchor="middle" fill="#333" font-size="9">Delta Lake</text>
+  <text x="612" y="154" text-anchor="middle" fill="#555" font-size="8">4 data marts</text>
+  <text x="612" y="168" text-anchor="middle" fill="#666" font-size="7.5">· ventas_mensuales</text>
+  <text x="612" y="180" text-anchor="middle" fill="#666" font-size="7.5">· ventas_por_tienda</text>
+  <text x="612" y="192" text-anchor="middle" fill="#666" font-size="7.5">· ventas_por_producto</text>
+  <text x="612" y="204" text-anchor="middle" fill="#666" font-size="7.5">· ventas_canal_doc</text>
+  <text x="612" y="218" text-anchor="middle" fill="#CC4400" font-size="7.5">⚠ sin JOIN maestros</text>
+  <text x="612" y="230" text-anchor="middle" fill="#888" font-size="7.5">cache df_silver ✓</text>
+
+  <!-- GOBIERNO (dentro de GCS zona, más abajo) -->
+  <rect x="165" y="370" width="500" height="80" fill="#EEF2FF" rx="8" stroke="#5B21B6" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="415" y="390" text-anchor="middle" fill="#5B21B6" font-size="10" font-weight="bold">GOBERNABILIDAD — BigQuery: retail_governance</text>
+  <text x="280" y="412" text-anchor="middle" fill="#444" font-size="9">data_lineage</text>
+  <text x="415" y="412" text-anchor="middle" fill="#444" font-size="9">pipeline_audit_log</text>
+  <text x="550" y="412" text-anchor="middle" fill="#444" font-size="9">data_quality_results</text>
+  <text x="280" y="428" text-anchor="middle" fill="#888" font-size="8">11 campos RAW→Gold</text>
+  <text x="415" y="428" text-anchor="middle" fill="#888" font-size="8">INICIO/EXITO/ERROR</text>
+  <text x="550" y="428" text-anchor="middle" fill="#888" font-size="8">Great Expectations</text>
+
+  <!-- ORQUESTACIÓN -->
+  <rect x="165" y="468" width="500" height="64" fill="#FFF7ED" rx="8" stroke="#EA580C" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="230" y="488" text-anchor="middle" fill="#EA580C" font-size="10" font-weight="bold">ORQUESTACIÓN</text>
+  <text x="390" y="488" text-anchor="middle" fill="#444" font-size="9">Cloud Composer (Airflow) — DAG diseñado, no desplegado ⚠</text>
+  <text x="390" y="506" text-anchor="middle" fill="#555" font-size="8.5">Clúster efímero Dataproc: USD 9/mes · 0.25h/día × 30 días</text>
+  <text x="390" y="520" text-anchor="middle" fill="#888" font-size="8">TriggerRule.ALL_DONE garantiza destrucción del clúster ante errores</text>
+
+  <!-- MOTOR SPARK (banda transversal) -->
+  <rect x="165" y="310" width="500" height="52" fill="#F0F9FF" rx="8" stroke="#0369A1" stroke-width="1.2"/>
+  <text x="415" y="330" text-anchor="middle" fill="#0369A1" font-size="10" font-weight="bold">MOTOR — Google Dataproc · Spark 3.4.1 + Delta Lake 2.4.0</text>
+  <text x="290" y="350" text-anchor="middle" fill="#444" font-size="8.5">Colab: 4 vCPU, shuffle=8</text>
+  <text x="415" y="350" text-anchor="middle" fill="#444" font-size="8.5">Dataproc: n2-std-4 × 3 nodos</text>
+  <text x="545" y="350" text-anchor="middle" fill="#444" font-size="8.5">Efímero · se apaga al terminar</text>
+
+  <!-- ═══ ZONA CONSUMO ═══ -->
+  <rect x="690" y="72" width="195" height="520" fill="#FDF4FF" rx="8" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="787" y="92" text-anchor="middle" fill="#7E22CE" font-size="11" font-weight="bold">CONSUMO</text>
+
+  <!-- BigQuery -->
+  <rect x="700" y="102" width="175" height="100" fill="white" rx="8" filter="url(#shadow)" stroke="#9333EA" stroke-width="1.5"/>
+  <rect x="700" y="102" width="175" height="22" fill="#7E22CE" rx="8"/>
+  <rect x="700" y="116" width="175" height="8" fill="#7E22CE"/>
+  <text x="787" y="118" text-anchor="middle" fill="white" font-size="10" font-weight="bold">BigQuery</text>
+  <text x="787" y="140" text-anchor="middle" fill="#333" font-size="9">External Tables / GCS</text>
+  <text x="787" y="154" text-anchor="middle" fill="#555" font-size="8">retail_gold (4 marts)</text>
+  <text x="787" y="168" text-anchor="middle" fill="#555" font-size="8">retail_governance</text>
+  <text x="787" y="182" text-anchor="middle" fill="#888" font-size="8">SQL ad-hoc · on-demand</text>
+
+  <!-- Looker Studio -->
+  <rect x="700" y="218" width="175" height="80" fill="white" rx="8" filter="url(#shadow)" stroke="#9333EA" stroke-width="1.5"/>
+  <rect x="700" y="218" width="175" height="22" fill="#9333EA" rx="8"/>
+  <rect x="700" y="232" width="175" height="8" fill="#9333EA"/>
+  <text x="787" y="248" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Looker Studio</text>
+  <text x="787" y="270" text-anchor="middle" fill="#333" font-size="9">Dashboards KPIs</text>
+  <text x="787" y="284" text-anchor="middle" fill="#555" font-size="8">Gerencia · Ops · Mktg</text>
+
+  <!-- Seguridad -->
+  <rect x="700" y="314" width="175" height="80" fill="white" rx="8" filter="url(#shadow)" stroke="#DC2626" stroke-width="1.2"/>
+  <rect x="700" y="314" width="175" height="22" fill="#DC2626" rx="8"/>
+  <rect x="700" y="328" width="175" height="8" fill="#DC2626"/>
+  <text x="787" y="344" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Seguridad IAM</text>
+  <text x="787" y="366" text-anchor="middle" fill="#333" font-size="9">4 service accounts</text>
+  <text x="787" y="380" text-anchor="middle" fill="#555" font-size="8">Mínimo privilegio · ACLs</text>
+
+  <!-- SHA / Policy Tags -->
+  <rect x="700" y="410" width="175" height="70" fill="white" rx="8" filter="url(#shadow)" stroke="#DC2626" stroke-width="1.2"/>
+  <text x="787" y="430" text-anchor="middle" fill="#DC2626" font-size="10" font-weight="bold">Datos Sensibles</text>
+  <text x="787" y="448" text-anchor="middle" fill="#333" font-size="9">SHA-256 + salt (PII)</text>
+  <text x="787" y="462" text-anchor="middle" fill="#555" font-size="8">Enmascaramiento rangos</text>
+  <text x="787" y="474" text-anchor="middle" fill="#888" font-size="8">Policy Tags BQ</text>
+
+  <!-- ═══ FLECHAS PRINCIPALES ═══ -->
+  <!-- Fuentes → RAW -->
+  <line x1="130" y1="130" x2="163" y2="143" stroke="#1B3A6B" stroke-width="1.8" marker-end="url(#arr)"/>
+  <line x1="130" y1="202" x2="163" y2="155" stroke="#CC4400" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <line x1="130" y1="274" x2="163" y2="175" stroke="#CC4400" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+
+  <!-- RAW → Bronze -->
+  <line x1="270" y1="142" x2="288" y2="142" stroke="#1B3A6B" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Bronze → Silver -->
+  <line x1="405" y1="152" x2="423" y2="152" stroke="#1B3A6B" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Silver → Gold -->
+  <line x1="540" y1="162" x2="558" y2="162" stroke="#1B3A6B" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Gold → BigQuery -->
+  <line x1="665" y1="152" x2="698" y2="152" stroke="#9333EA" stroke-width="2" marker-end="url(#arr2)"/>
+
+  <!-- BigQuery → Looker -->
+  <line x1="787" y1="202" x2="787" y2="216" stroke="#9333EA" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+  <!-- Capas → Gobierno (flecha hacia abajo) -->
+  <line x1="347" y1="202" x2="347" y2="368" stroke="#5B21B6" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr2)"/>
+  <line x1="482" y1="222" x2="482" y2="368" stroke="#5B21B6" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr2)"/>
+
+  <!-- Leyenda -->
+  <rect x="20" y="540" width="660" height="70" fill="white" rx="6" stroke="#DDD" stroke-width="1"/>
+  <text x="35" y="557" fill="#333" font-size="9" font-weight="bold">LEYENDA</text>
+  <line x1="35" y1="570" x2="75" y2="570" stroke="#1B3A6B" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="80" y="574" fill="#333" font-size="9">Flujo principal de datos</text>
+  <line x1="160" y1="570" x2="200" y2="570" stroke="#CC4400" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="205" y="574" fill="#CC4400" font-size="9">Pendiente integración</text>
+  <line x1="320" y1="570" x2="360" y2="570" stroke="#5B21B6" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr2)"/>
+  <text x="365" y="574" fill="#5B21B6" font-size="9">Trazabilidad / gobierno</text>
+  <rect x="35" y="582" width="10" height="10" fill="#EBF5EB" stroke="#2E8B57" stroke-width="1"/>
+  <text x="50" y="591" fill="#333" font-size="9">GCS Data Lake</text>
+  <rect x="120" y="582" width="10" height="10" fill="#FDF4FF" stroke="#9333EA" stroke-width="1"/>
+  <text x="135" y="591" fill="#333" font-size="9">Consumo / BI</text>
+  <text x="220" y="591" fill="#CC4400" font-size="9">⚠ Limitación conocida (Sección 6.1)</text>
+</svg>

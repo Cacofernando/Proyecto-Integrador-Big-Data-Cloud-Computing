@@ -77,7 +77,7 @@ proyecto-retail-bigdata/
 │   ├── EDA_y_Calidad.ipynb      ← Exploración inicial con PySpark
 │   ├── Capa_Bronze.ipynb        ← Ingesta CSV → Delta Lake
 │   ├── Capa_Silver.ipynb        ← Limpieza + particionamiento
-│   ├── Capa_Gold_v2.ipynb       ← 4 data marts comerciales
+│   ├── Capa_Gold.ipynb       ← 4 data marts comerciales
 │   └── Gobernabilidad.ipynb     ← IAM, linaje, calidad, seguridad
 │
 ├── src/                         ← Módulos Python productizados (Fase 3)
@@ -91,6 +91,7 @@ proyecto-retail-bigdata/
 │
 ├── docs/
 │   ├── arquitectura_c4_nivel2.svg  ← Diagrama C4 Nivel 2
+|.  ├── Informe_Tecnico_Fase3 ← Informe técnico de la Fase 3
 │   └── adrs/
 │       ├── ADR-001-delta-lake-formato-almacenamiento.md
 │       ├── ADR-002-batch-vs-streaming.md
