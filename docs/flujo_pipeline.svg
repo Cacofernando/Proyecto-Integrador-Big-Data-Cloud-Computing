@@ -1,0 +1,117 @@
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arw" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1B3A6B"/>
+    </marker>
+    <filter id="sh" x="-8%" y="-8%" width="120%" height="130%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#00000025"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="340" fill="#F8FAFC" rx="10"/>
+
+  <!-- Título -->
+  <rect x="0" y="0" width="900" height="44" fill="#1B3A6B" rx="10"/>
+  <rect x="0" y="32" width="900" height="12" fill="#1B3A6B"/>
+  <text x="450" y="27" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Flujo del Pipeline — 4 Etapas Secuenciales · Ventana Nocturna 00:00–02:00 CLT</text>
+
+  <!-- ── ETAPA 1: FUENTE + RAW ── -->
+  <rect x="20" y="64" width="148" height="200" fill="white" rx="10" filter="url(#sh)" stroke="#5C9E31" stroke-width="2"/>
+  <rect x="20" y="64" width="148" height="32" fill="#5C9E31" rx="10"/>
+  <rect x="20" y="84" width="148" height="12" fill="#5C9E31"/>
+  <text x="94" y="84" text-anchor="middle" fill="white" font-size="11" font-weight="bold">ETAPA 1 — RAW</text>
+  <text x="94" y="112" text-anchor="middle" fill="#1A5C36" font-size="10" font-weight="bold">Ingesta de Fuentes</text>
+  <text x="94" y="130" text-anchor="middle" fill="#333" font-size="9">CSV desde ERP/Ecom</text>
+  <text x="94" y="146" text-anchor="middle" fill="#444" font-size="9">gs://.../raw/</text>
+  <line x1="30" y1="158" x2="158" y2="158" stroke="#DDD" stroke-width="1"/>
+  <text x="94" y="173" text-anchor="middle" fill="#555" font-size="8.5">· inferSchema=False</text>
+  <text x="94" y="187" text-anchor="middle" fill="#555" font-size="8.5">· Preserva tipos originales</text>
+  <text x="94" y="201" text-anchor="middle" fill="#555" font-size="8.5">· Sin modificaciones</text>
+  <text x="94" y="222" text-anchor="middle" fill="#1A5C36" font-size="8" font-weight="bold">Python + PySpark</text>
+  <text x="94" y="237" text-anchor="middle" fill="#888" font-size="8">Linaje registrado → BQ</text>
+  <rect x="35" y="248" width="118" height="12" fill="#E8F5E9" rx="3"/>
+  <text x="94" y="258" text-anchor="middle" fill="#2E7D32" font-size="8">📥 venta_tiendas.csv</text>
+
+  <!-- Flecha 1→2 -->
+  <line x1="168" y1="164" x2="196" y2="164" stroke="#1B3A6B" stroke-width="2.5" marker-end="url(#arw)"/>
+
+  <!-- ── ETAPA 2: BRONZE ── -->
+  <rect x="196" y="64" width="160" height="200" fill="white" rx="10" filter="url(#sh)" stroke="#CD7F32" stroke-width="2"/>
+  <rect x="196" y="64" width="160" height="32" fill="#CD7F32" rx="10"/>
+  <rect x="196" y="84" width="160" height="12" fill="#CD7F32"/>
+  <text x="276" y="84" text-anchor="middle" fill="white" font-size="11" font-weight="bold">ETAPA 2 — BRONZE</text>
+  <text x="276" y="112" text-anchor="middle" fill="#7B4600" font-size="10" font-weight="bold">Almacenamiento Crudo</text>
+  <text x="276" y="130" text-anchor="middle" fill="#333" font-size="9">Delta Lake · Sin cambios</text>
+  <text x="276" y="146" text-anchor="middle" fill="#444" font-size="9">gs://.../bronze/</text>
+  <line x1="206" y1="158" x2="346" y2="158" stroke="#DDD" stroke-width="1"/>
+  <text x="276" y="173" text-anchor="middle" fill="#555" font-size="8.5">· ACID transactions</text>
+  <text x="276" y="187" text-anchor="middle" fill="#555" font-size="8.5">· Time Travel habilitado</text>
+  <text x="276" y="201" text-anchor="middle" fill="#555" font-size="8.5">· Sin partición</text>
+  <text x="276" y="215" text-anchor="middle" fill="#555" font-size="8.5">· Schema preservation</text>
+  <text x="276" y="230" text-anchor="middle" fill="#7B4600" font-size="8" font-weight="bold">Delta Lake 2.4.0</text>
+  <rect x="211" y="241" width="130" height="16" fill="#FFF3E0" rx="3"/>
+  <text x="276" y="252" text-anchor="middle" fill="#E65100" font-size="8">Fuente de verdad inmutable</text>
+
+  <!-- Flecha 2→3 -->
+  <line x1="356" y1="164" x2="384" y2="164" stroke="#1B3A6B" stroke-width="2.5" marker-end="url(#arw)"/>
+
+  <!-- ── ETAPA 3: SILVER ── -->
+  <rect x="384" y="64" width="175" height="200" fill="white" rx="10" filter="url(#sh)" stroke="#888" stroke-width="2"/>
+  <rect x="384" y="64" width="175" height="32" fill="#666" rx="10"/>
+  <rect x="384" y="84" width="175" height="12" fill="#666"/>
+  <text x="471" y="84" text-anchor="middle" fill="white" font-size="11" font-weight="bold">ETAPA 3 — SILVER</text>
+  <text x="471" y="112" text-anchor="middle" fill="#333" font-size="10" font-weight="bold">7 Transformaciones</text>
+  <text x="471" y="128" text-anchor="middle" fill="#333" font-size="9">Delta Lake · Particionado</text>
+  <line x1="394" y1="136" x2="549" y2="136" stroke="#DDD" stroke-width="1"/>
+  <text x="471" y="151" text-anchor="middle" fill="#555" font-size="8.5">① Cast cols. numéricas</text>
+  <text x="471" y="164" text-anchor="middle" fill="#555" font-size="8.5">② Eliminar sufijo " CL"</text>
+  <text x="471" y="177" text-anchor="middle" fill="#555" font-size="8.5">③ Conversión a date</text>
+  <text x="471" y="190" text-anchor="middle" fill="#555" font-size="8.5">④ Crear anio / mes / dia</text>
+  <text x="471" y="203" text-anchor="middle" fill="#555" font-size="8.5">⑤ Calcular margen</text>
+  <text x="471" y="216" text-anchor="middle" fill="#555" font-size="8.5">⑥ Deduplicación</text>
+  <text x="471" y="229" text-anchor="middle" fill="#555" font-size="8.5">⑦ Filtros de calidad</text>
+  <rect x="394" y="240" width="155" height="16" fill="#E3F2FD" rx="3"/>
+  <text x="471" y="251" text-anchor="middle" fill="#0D47A1" font-size="8" font-weight="bold">.partitionBy("anio","mes")</text>
+
+  <!-- Flecha 3→4 -->
+  <line x1="559" y1="164" x2="587" y2="164" stroke="#1B3A6B" stroke-width="2.5" marker-end="url(#arw)"/>
+
+  <!-- ── ETAPA 4: GOLD ── -->
+  <rect x="587" y="64" width="175" height="200" fill="white" rx="10" filter="url(#sh)" stroke="#D4AC0D" stroke-width="2"/>
+  <rect x="587" y="64" width="175" height="32" fill="#B8860B" rx="10"/>
+  <rect x="587" y="84" width="175" height="12" fill="#B8860B"/>
+  <text x="674" y="84" text-anchor="middle" fill="white" font-size="11" font-weight="bold">ETAPA 4 — GOLD</text>
+  <text x="674" y="110" text-anchor="middle" fill="#5C4400" font-size="10" font-weight="bold">4 Data Marts Analíticos</text>
+  <text x="674" y="126" text-anchor="middle" fill="#333" font-size="9">df_silver.cache() primero</text>
+  <line x1="597" y1="134" x2="752" y2="134" stroke="#DDD" stroke-width="1"/>
+  <text x="674" y="149" text-anchor="middle" fill="#555" font-size="8.5">📊 ventas_mensuales</text>
+  <text x="674" y="162" text-anchor="middle" fill="#555" font-size="8.5">🏪 ventas_por_tienda</text>
+  <text x="674" y="175" text-anchor="middle" fill="#555" font-size="8.5">📦 ventas_por_producto</text>
+  <text x="674" y="188" text-anchor="middle" fill="#555" font-size="8.5">🔀 ventas_canal_doc</text>
+  <line x1="597" y1="198" x2="752" y2="198" stroke="#DDD" stroke-width="1"/>
+  <text x="674" y="212" text-anchor="middle" fill="#B8860B" font-size="8" font-weight="bold">Cache −89% tiempo ✓</text>
+  <text x="674" y="225" text-anchor="middle" fill="#B8860B" font-size="8" font-weight="bold">Partition pruning −96% ✓</text>
+  <rect x="600" y="234" width="150" height="16" fill="#CC440022" rx="3" stroke="#CC4400" stroke-width="0.8"/>
+  <text x="675" y="245" text-anchor="middle" fill="#CC4400" font-size="8">⚠ Sin JOIN maestros aún</text>
+
+  <!-- Flecha 4→BigQuery -->
+  <line x1="762" y1="164" x2="790" y2="164" stroke="#9333EA" stroke-width="2" marker-end="url(#arw)"/>
+
+  <!-- ── CONSUMO ── -->
+  <rect x="790" y="84" width="100" height="80" fill="white" rx="8" filter="url(#sh)" stroke="#9333EA" stroke-width="1.5"/>
+  <rect x="790" y="84" width="100" height="22" fill="#7E22CE" rx="8"/>
+  <rect x="790" y="96" width="100" height="10" fill="#7E22CE"/>
+  <text x="840" y="100" text-anchor="middle" fill="white" font-size="9" font-weight="bold">BigQuery</text>
+  <text x="840" y="120" text-anchor="middle" fill="#333" font-size="8.5">External Tables</text>
+  <text x="840" y="133" text-anchor="middle" fill="#555" font-size="8">SQL on-demand</text>
+  <text x="840" y="155" text-anchor="middle" fill="#9333EA" font-size="8" font-weight="bold">Looker Studio</text>
+
+  <!-- Tiempos -->
+  <rect x="20" y="278" width="870" height="50" fill="white" rx="8" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="35" y="295" fill="#1B3A6B" font-size="9" font-weight="bold">⏱ TIEMPOS MEDIDOS (Google Colab + GCS)</text>
+  <text x="35" y="313" fill="#444" font-size="8.5">Bronze: ~18.4 s</text>
+  <text x="175" y="313" fill="#444" font-size="8.5">Silver: ~45.7 s (escritura particionada)</text>
+  <text x="390" y="313" fill="#444" font-size="8.5">Gold s/cache: ~45.2 s  |  c/cache: ~4.8 s  (−89.4%)</text>
+  <text x="660" y="313" fill="#444" font-size="8.5">Total pipeline: &lt; 15 min ✓</text>
+  <text x="35" y="322" fill="#888" font-size="7.5">Optimización 3: shuffle.partitions 200→8 · evita overhead de microtasks en Colab 4 vCPU</text>
+</svg>
