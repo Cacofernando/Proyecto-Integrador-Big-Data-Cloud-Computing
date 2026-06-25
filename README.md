@@ -35,8 +35,8 @@ Una empresa chilena de retail opera un ecosistema omnicanal (tiendas físicas + 
 
 ```
                               ┌──────────────────────────────────────────────────┐
-                              │           GCP: data-lake-retail (GCS)           │
-                              │                                                  │
+                              │           GCP: data-lake-retail (GCS)           
+                              │                                                  
   [CSV Fuentes]──ingesta──►  [RAW]──Spark──►[BRONZE]──Spark──►[SILVER]──Spark──►[GOLD]
   venta_tiendas.csv           │   Delta Lake   Delta Lake    Delta Lake         BigQuery
   venta_ecom.csv              │   inmutable    tipificado    data marts
@@ -68,7 +68,7 @@ Proyecto-Integrador-Big-Data-Cloud-Computing/
 │   ├── EDA_y_Calidad.ipynb            ← 00: Análisis exploratorio con PySpark
 │   ├── Capa_Bronze.ipynb              ← 01: Ingesta RAW → Delta Lake Bronze
 │   ├── Capa_Silver.ipynb              ← 02: Limpieza y transformación Silver
-│   ├── Capa_Gold_v2.ipynb             ← 03: Data marts Gold + evidencia de cache
+│   ├── Capa_Gold.ipynb             ← 03: Data marts Gold + evidencia de cache
 │   ├── Gobernabilidad.ipynb           ← 04: IAM, linaje, datos sensibles, GE
 │   └── Optimizacion_y_FinOps.ipynb    ← 05: Evidencia de optimización y costos
 │
